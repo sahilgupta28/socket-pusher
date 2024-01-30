@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0ed3cf">
+    <meta name="msapplication-TileColor" content="#0ed3cf">
+    <meta name="theme-color" content="#0ed3cf">
+
+    <meta property="og:image"
+        content="https://tailwindcomponents.com/storage/2395/temp83995.png?v=2024-01-30 10:40:37" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:type" content="image/png" />
+
+    <meta property="og:url" content="https://tailwindcomponents.com/component/chat-messages/landing" />
+    <meta property="og:title" content="Tailwind CSS Chat Messages by rahulsya" />
+    <meta property="og:description" content="Design inspiration from dribble.com, coding with Tailwind CSS" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@TwComponents" />
+    <meta name="twitter:title" content="Tailwind CSS Chat Messages by rahulsya" />
+    <meta name="twitter:description" content="Design inspiration from dribble.com, coding with Tailwind CSS" />
+    <meta name="twitter:image"
+        content="https://tailwindcomponents.com/storage/2395/temp83995.png?v=2024-01-30 10:40:37" />
+
+    <link rel="canonical" href="https://tailwindcomponents.com/component/chat-messages" itemprop="URL">
+
+    <title>Tailwind CSS Chat Messages by rahulsya. </title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+</head>
+
+<body class="bg-gray-200">
+    <div class="fixed bottom-0 left-0 right-0 z-40 px-4 py-3 text-center text-white bg-gray-800">
+        This is a Tailwind CSS Chat Messages by rahulsya.
+        <a class="text-gray-200 underline" href="https://tailwindcomponents.com/component/chat-messages">Component
+            details</a>
+    </div>
+    <!-- This is an example component -->
+    <div class="container mx-auto shadow-lg rounded-lg">
+        <!-- headaer -->
+        <div class="px-5 py-5 flex justify-between items-center bg-white border-b-2">
+            <div class="font-semibold text-2xl">GoingChat</div>
+            <div
+                class="h-12 w-12 p-2 bg-yellow-500 rounded-full text-white font-semibold flex items-center justify-center">
+                SG
+            </div>
+        </div>
+        <!-- end header -->
+        <!-- Chatting -->
+        <div class="flex flex-row justify-between bg-white">
+
+            <!-- message -->
+            <div class="w-full px-5 flex flex-col justify-between">
+                <div class="flex flex-col mt-5">
+                    <div id="chatBox">
+                    
+                    </div>
+                <div class="py-5">
+                    <input class="w-full bg-gray-300 py-5 px-3 rounded-xl" type="text" id="chatMessage" placeholder="type your message here..." />
+                </div>
+            </div>
+            <!-- end message -->
+
+        </div>
+    </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        $('#chatMessage').keydown(function (event) {
+            var id = event.which || event.keyCode || 0;
+            if (id == 13) {
+                let message = $(this).val();
+                $(this).val('');
+                // appendMessageInChatBox(message);
+                sendNotification(message);
+            }
+        });
+        var socket = io.connect('http://127.0.0.1:3000');
+
+        socket.on('chat-box', function (data) {
+            appendMessageInChatBox(data.data.message);
+        });
+
+        function appendMessageInChatBox(message) {
+            message = '<div class="flex justify-start mb-4"><div class="ml-2 py-3 px-4 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white">' + message + '</div></div>'
+            $('#chatBox').append(message)
+        }
+
+        function sendNotification(message) {
+            var settings = {
+                "url": "http://127.0.0.1:3000/send-message",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "channel_name": "chat-box",
+                    "data": {
+                        "message": message
+                    }
+                }),
+            };
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+            });
+        }
+    });
+</script>
+
+</html>
